@@ -1,0 +1,46 @@
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	welcome()
+
+	showMenu()
+
+	option := readOption()
+
+	switch option {
+	case 1:
+		fmt.Println("Monitoring...")
+	case 2:
+		fmt.Println("Showing logs...")
+	case 0:
+		fmt.Println("Process finishing...")
+		os.Exit(0)
+	default:
+		fmt.Println("Invalid option")
+		os.Exit(-1)
+	}
+}
+
+func welcome() {
+	version := "1.0"
+	fmt.Println("*** Program Website Monitoring - Version", version, "***")
+}
+
+func readOption() int {
+	fmt.Print("Choose one option, please: ")
+	var option int
+	fmt.Scan(&option)
+	return option
+}
+
+func showMenu() {
+	fmt.Println("--- MENU ---")
+	fmt.Println("1 - Start monitoring")
+	fmt.Println("2 - Show logs")
+	fmt.Println("0 - Quit")
+}
