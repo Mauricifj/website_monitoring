@@ -4,7 +4,15 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 )
+
+// Will check all urls this number of times
+const rounds = 5
+
+// Will wait for this amount of time between rounds
+const delay = 5
+const timeUnit = time.Second
 
 func main() {
 	welcome()
@@ -17,11 +25,16 @@ func main() {
 		switch option {
 		case 1:
 			startMonitoring()
+
 		case 2:
-			fmt.Println("Showing logs...")
+			fmt.Println("Not implemented yet...")
+			fmt.Println("Come back soon")
+			newLine()
+
 		case 0:
 			fmt.Println("Process finishing...")
 			os.Exit(0)
+
 		default:
 			fmt.Println("Invalid option")
 			os.Exit(-1)
@@ -30,19 +43,37 @@ func main() {
 }
 
 func startMonitoring() {
-	fmt.Println("Monitoring...")
-	url := "https://httpstat.us/200"
-	response, _ := http.Get(url)
+	fmt.Println("-- WEBSITE MONITOR STARTED --")
+	newLine()
 
-	if response.StatusCode == 200 {
-		fmt.Println("Website:", url, "is ok")
-	} else {
-		fmt.Println("Website:", url, "is not ok. Status code:", response.StatusCode)
+	urls := []string{
+		"https://httpstat.us/200",
+		"https://httpstat.us/404",
+		"https://httpstat.us/500",
+		"https://google.com",
+	}
+
+	for i := 0; i < rounds; i++ {
+		for _, url := range urls {
+			check(url)
+		}
+
+		// Check if it's the last loop, if it's not, sleep for specified time
+		if i != rounds- 1 {
+			newLine()
+			fmt.Println("-- WAIT FOR THE NEXT MONITORING --")
+			newLine()
+			time.Sleep(delay * timeUnit)
+		} else {
+			newLine()
+			fmt.Println("-- WEBSITE MONITOR ENDED --")
+			newLine()
+		}
 	}
 }
 
 func welcome() {
-	version := "1.1"
+	version := "1.2"
 	fmt.Println("*** Program Website Monitoring - Version", version, "***")
 }
 
@@ -58,4 +89,22 @@ func showMenu() {
 	fmt.Println("1 - Start monitoring")
 	fmt.Println("2 - Show logs")
 	fmt.Println("0 - Quit")
+}
+
+func check(url string) {
+	response, err := http.Get(url)
+
+	if response != nil {
+		if response.StatusCode == 200 {
+			fmt.Println("Website:", url, "is ok")
+		} else {
+			fmt.Println("Website:", url, "is not ok. Status code:", response.StatusCode)
+		}
+	} else {
+		fmt.Println("Website:", url, " - Error:", err)
+	}
+}
+
+func newLine() {
+	fmt.Println()
 }
